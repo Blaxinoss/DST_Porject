@@ -10,7 +10,13 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            background-color: #f0f0f0;
+            background-color: #1c1e27;
+
+
+        }
+
+        h2 {
+            color: orangered;
         }
 
         .search-container {
@@ -18,9 +24,9 @@
             margin: auto;
             text-align: center;
             padding: 20px;
-            background-color: #81a8c7;
+            background-color: #f5f7fb;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+            border-radius: 19px;
         }
 
         .results-container {
@@ -37,7 +43,7 @@
             border: 1px solid #ddd;
             padding: 15px;
             margin: 10px;
-            background-color: #ffffff;
+            background-color: #b0c4de;
             border-radius: 8px;
             display: inline-block;
             width: calc(33% - 40px);
@@ -53,12 +59,12 @@
 
         .product p {
             font-size: 16px;
-            color: #555;
+            color: #000000;
         }
 
         .product a {
             text-decoration: none;
-            color: #007BFF;
+            color: #0004ab;
         }
 
         .product a:hover {
@@ -69,6 +75,7 @@
             padding: 10px;
             border-radius: 10px;
             outline: none;
+            background: #2eb0cf;
             border: none;
         }
 
@@ -77,7 +84,7 @@
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            background-color: #0056b3;
+            background-color: #dc1666;
             color: white;
         }
 
@@ -91,7 +98,7 @@
 
 <body>
     <div class="search-container">
-        <h1>Search for a Product</h1>
+        <h1 style="color: darkslategrey;">Search for a Product</h1>
         <form id="search-form">
             <input type="text" id="query" name="query" placeholder="Enter product name..." required>
             <button class="buttonsub" type="submit">Search</button>
@@ -160,8 +167,10 @@
                 const productDiv = document.createElement('div');
                 productDiv.className = 'product';
                 productDiv.innerHTML = `
-                    <h3><a href="${product.link}" target="_blank">${product.title}</a></h3>
-                    <p>${product.price} EGP</p>
+                    <h3 ><a href="${product.link}" target="_blank">${product.title}</a></h3>
+                    <p>Real Egyptian Price ${product.price_egp} EGP</p>
+                    <p>Predicted US Price ${product.price_usd} USD</p>
+                    
                 `;
                 groupDiv.appendChild(productDiv);
             });
