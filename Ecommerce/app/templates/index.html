@@ -1,0 +1,174 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .search-container {
+            max-width: 500px;
+            margin: auto;
+            text-align: center;
+            padding: 20px;
+            background-color: #81a8c7;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .results-container {
+            margin-top: 20px;
+        }
+
+        .results-group {
+            margin-bottom: 40px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 20px;
+        }
+
+        .product {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            display: inline-block;
+            width: calc(33% - 40px);
+            /* Adjust width for margins */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .product h3 {
+            font-size: 18px;
+            margin: 0;
+            color: #333;
+        }
+
+        .product p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .product a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+
+        .product a:hover {
+            color: #0056b3;
+        }
+
+        #query {
+            padding: 10px;
+            border-radius: 10px;
+            outline: none;
+            border: none;
+        }
+
+        .buttonsub {
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: #0056b3;
+            color: white;
+        }
+
+        .buttonsub:hover {
+            background-color: #942222;
+            transition: background-color;
+            transition-duration: 100ms;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="search-container">
+        <h1>Search for a Product</h1>
+        <form id="search-form">
+            <input type="text" id="query" name="query" placeholder="Enter product name..." required>
+            <button class="buttonsub" type="submit">Search</button>
+        </form>
+    </div>
+
+    <div class="results-container" id="results">
+        <!-- Search results will be displayed here -->
+    </div>
+
+    <script>
+        document.getElementById('search-form').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get the search query
+            const query = document.getElementById('query').value.trim().toLowerCase();
+            console.log(query);
+
+            // Send the query to the backend
+            fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ query })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        console.log(response);
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();  // Ensure that the body is only read once
+                })
+                .then(data => {
+                    displayResults(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to retrieve data. Please try again later.');
+                });
+        });
+
+        function displayResults(data) {
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = ''; // Clear previous results
+
+            // Create a group for each store's results
+            const hardwareGroup = createResultsGroup('hardware', data.hardware);
+            const kimoGroup = createResultsGroup('kimo', data.kimo);
+            const sigmaGroup = createResultsGroup('sigma', data.sigma);
+
+            resultsContainer.appendChild(hardwareGroup);
+            resultsContainer.appendChild(kimoGroup);
+            resultsContainer.appendChild(sigmaGroup);
+        }
+
+        function createResultsGroup(storeName, products) {
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'results-group';
+
+            const header = document.createElement('h2');
+            header.textContent = `${storeName.charAt(0).toUpperCase() + storeName.slice(1)} Store`;
+            groupDiv.appendChild(header);
+
+            products.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product';
+                productDiv.innerHTML = `
+                    <h3><a href="${product.link}" target="_blank">${product.title}</a></h3>
+                    <p>${product.price} EGP</p>
+                `;
+                groupDiv.appendChild(productDiv);
+            });
+
+            return groupDiv;
+        }
+    </script>
+</body>
+
+</html>
